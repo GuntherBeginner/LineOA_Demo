@@ -61,7 +61,9 @@ exports.webhook = onRequest(async (request, response) => {
           } else if (event.message.text.toLowerCase() == "room") {
             await line.reply(replyToken, [template.promotion()]);
           } else {
-            const message = await gemini.chat(event.message.text);
+            // const message = await gemini.chat(event.message.text);
+            // await line.reply(replyToken, [template.text(message)]); ใช้ตอบทุกเรื่อง
+            const message = await gemini.chatWithOwnData(event.message.text);
             await line.reply(replyToken, [template.text(message)]);
           }
         } else if (event.message.type === "image") {
@@ -70,6 +72,11 @@ exports.webhook = onRequest(async (request, response) => {
           const image = await gemini.multimodal(imageBinary);
           await line.reply(replyToken, [template.text(image)]);
         }
+      // else if (event.message.text.toLowerCase() == "สอบถามระบบ") {
+      //   const message = await gemini.chatWithOwnData(event.message.text);
+      //   console.log(message);
+      //   await line.reply(replyToken, [template.text(message)]);
+      // } ef สำหรับกรณีเลือกต้องการคุยกับ AI
     }
   }
   return response.end();

@@ -1,6 +1,7 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const axios = require("axios");
+const json = require("./demo.json");
 
 exports.textOnly = async (prompt) => {
   // For text-only input, use the gemini-pro model
@@ -54,7 +55,9 @@ exports.chat = async (prompt) => {
 };
 
 exports.chatWithOwnData = async (prompt) => {
-  const response = await axios.get("https://wutthipong.info/info.json");
+  const response = await axios.get(
+    "https://api.jsonbin.io/v3/b/668c4af1ad19ca34f884c5ce"
+  );
   let information = await response.data;
   information = JSON.stringify(information);
 

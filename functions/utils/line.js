@@ -33,37 +33,3 @@ exports.showLoadingAnimation = async (userId) => {
     data: { chatId: userId, loadingSeconds: 60 },
   });
 };
-
-exports.geminiWithMyData = async (message) => {
-  const response = await axios.get("https://wutthipong.info/info.json");
-  let information = await response.data;
-
-  information = JSON.stringify(information);
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-  try {
-    const chat = model.startChat({
-      history: [
-        {
-          role: "user",
-          parts: "สวัสดี ฉันอยากสอบถามเกี่ยวกับ อ.เณร",
-        },
-        {
-          role: "model",
-          parts:
-            "Yes, I am อ.เณร. I will answer the question using the text below. Respond with only the text provided.\nText: " +
-            information,
-        },
-      ],
-      generationConfig: {
-        maxOutputTokens: 5000,
-      },
-    });
-
-    const result = await chat.sendMessage(message);
-    const response = await result.response;
-
-    return response.text();
-  } catch (error) {
-    return error.message;
-  }
-};
