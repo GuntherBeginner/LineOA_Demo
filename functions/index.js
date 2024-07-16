@@ -40,13 +40,15 @@ exports.webhook = onRequest(async (request, response) => {
       case "message":
         if (event.message.type === "text") {
           if (event.message.text.toLowerCase() == "promotion") {
+            await line.showLoadingAnimation(userId);
             await line.reply(replyToken, [
               template.image("exroom"),
               template.text(
                 "PROMOTION\nDouble Room : 2 Person\nPrice (-50%) : 1,000 $ (จาก 2,000 $)"
               ),
             ]);
-          } else if (event.message.text.toLowerCase() == "check in") {
+          } else if (event.message.text.toLowerCase() == "flex") {
+            await line.showLoadingAnimation(userId);
             await line.reply(replyToken, [
               template.text("Booking : EX001 (Family Room)"),
               template.image("confirm"),
@@ -58,11 +60,16 @@ exports.webhook = onRequest(async (request, response) => {
             //     template.text("Check In. Successfuly."),
             //   ]);
             // }
-          } else if (event.message.text.toLowerCase() == "room") {
+          } else if (event.message.text.toLowerCase() == "hi") {
+            await line.showLoadingAnimation(userId);
+            await line.reply(replyToken, [template.text("สวัสดีค่ะ")]);
+          } else if (event.message.text.toLowerCase() == "Flex") {
+            await line.showLoadingAnimation(userId);
             await line.reply(replyToken, [template.promotion()]);
           } else {
             // const message = await gemini.chat(event.message.text);
             // await line.reply(replyToken, [template.text(message)]); ใช้ตอบทุกเรื่อง
+            await line.showLoadingAnimation(userId);
             const message = await gemini.chatWithOwnData(event.message.text);
             await line.reply(replyToken, [template.text(message)]);
           }
