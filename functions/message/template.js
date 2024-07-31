@@ -13,6 +13,144 @@ exports.sticker = (packageId, stickerId) => {
   };
 };
 
+//image เอามาจากอาจารย์
+exports.image = (originalContentUrl, previewImageUrl) => {
+  return {
+    type: "image",
+    originalContentUrl: originalContentUrl,
+    previewImageUrl: previewImageUrl,
+  };
+};
+
+//location เอามาจากอาจารย์
+exports.location = () => {
+  return {
+    type: "location",
+    title: "my location",
+    address: "1-3 Kioicho, Chiyoda-ku, Tokyo, 102-8282, Japan",
+    latitude: 35.67966,
+    longitude: 139.73669,
+  };
+};
+
+//flex message เอามาจากอาจารย์
+exports.flex = (date, data) => {
+  return {
+    type: "flex",
+    altText: "Flex Message",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        contents: [
+          {
+            type: "text",
+            text: date,
+            weight: "bold",
+            color: "#1DB446",
+            size: "sm",
+          },
+          {
+            type: "text",
+            text: "Latest Price",
+            weight: "bold",
+            size: "xxl",
+            margin: "md",
+          },
+          {
+            type: "separator",
+            margin: "xxl",
+          },
+          {
+            type: "box",
+            layout: "vertical",
+            margin: "xxl",
+            spacing: "sm",
+            contents: data,
+          },
+        ],
+      },
+      styles: {
+        footer: {
+          separator: true,
+        },
+      },
+    },
+  };
+};
+
+//mapimage เอามาจากอาจารย์
+exports.imageMap = () => {
+  return {
+    type: "imagemap",
+    baseUrl:
+      "https://wutthipong.info/wp-content/uploads/2024/03/LCC2024.png?v1",
+    altText: "This is an imagemap",
+    baseSize: {
+      width: 1040,
+      height: 1245,
+    },
+    actions: [
+      {
+        type: "message",
+        area: {
+          x: 358,
+          y: 93,
+          width: 323,
+          height: 378,
+        },
+        text: "face",
+      },
+      {
+        type: "uri",
+        area: {
+          x: 195,
+          y: 515,
+          width: 665,
+          height: 122,
+        },
+        linkUri: "https://wutthipong.info",
+      },
+    ],
+  };
+};
+
+//mapimage CAT MEME
+exports.imageMapCat = () => {
+  return {
+    type: "imagemap",
+    baseUrl: "https://m.media-amazon.com/images/I/51gk0qxOyfL.jpg?w=auto",
+    altText: "This is an imagemap",
+    baseSize: {
+      width: 1040,
+      height: 1040,
+    },
+    actions: [
+      {
+        type: "message",
+        area: {
+          x: 105,
+          y: 59,
+          width: 835,
+          height: 716,
+        },
+        text: "face CAT",
+      },
+      {
+        type: "message",
+        area: {
+          x: 92,
+          y: 809,
+          width: 846,
+          height: 145,
+        },
+        text: "Hello",
+      },
+    ],
+  };
+};
+
 exports.image = (text) => {
   const exroom =
     "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/11/4b/62/5c/loft-room-in-wooden-longhouse.jpg?w=700&h=-1&s=1";

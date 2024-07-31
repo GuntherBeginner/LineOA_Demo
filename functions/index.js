@@ -75,9 +75,66 @@ exports.webhook = onRequest(async (request, response) => {
           }
         } else if (event.message.type === "image") {
           await line.showLoadingAnimation(userId);
-          const imageBinary = await line.getImageBinary(event.message.id);
-          const image = await gemini.multimodal(imageBinary);
-          await line.reply(replyToken, [template.text(image)]);
+          const imageBinary = await line.getImageBinary(event.message.id); //แปลง Binary
+          const image = await gemini.multimodal(imageBinary); // เรียกใช้ function และเก็บค่า
+          await line.reply(replyToken, [template.text(image)]); // โชว์ผลลัพธ์ของ image
+        } else if (event.message.text.toLowerCase === "รูปภาพ 1") {
+          await line.showLoadingAnimation(userId);
+          await line.reply(replyToken, [template.imageMapCat()]); // โชว์ผลลัพธ์ของ image
+        } else if (event.message.text.toLowerCase === "รูปภาพ 2") {
+          await line.showLoadingAnimation(userId); // เรียกใช้ function และเก็บค่า
+          await line.reply(replyToken, [template.imageMap()]); // โชว์ผลลัพธ์ของ image
+        } else if (event.message.text === "ราคา") {
+          const response = await axios.get(
+            "http://www.thaigold.info/RealTimeDataV2/gtdata_.txt"
+          );
+
+          let information = await response.data;
+          console.log(information);
+
+          let data = [];
+          let name = "";
+          let bid = "";
+
+          let item = null;
+          //loop information
+          for (let i = 0; i < information.length; i++) {
+            name = information[i].name;
+            bid = information[i].bid;
+
+            if (bid != "") {
+              item = {
+                type: "box",
+                layout: "horizontal",
+                contents: [
+                  {
+                    type: "text",
+                    text: name,
+                    size: "sm",
+                    color: "#555555",
+                    flex: 0,
+                  },
+                  {
+                    type: "text",
+                    text: bid.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    size: "sm",
+                    color: "#111111",
+                    align: "end",
+                  },
+                ],
+              };
+              if (name != "Update") {
+                data.push(item);
+              }
+            }
+          }
+
+          data.push({ type: "separator", margin: "xxl" });
+          date = new Date().toLocaleString("th-TH", {
+            timeZone: "Asia/Bangkok",
+          });
+
+          await line.reply(replyToken, [template.flex(date, data)]);
         }
       // else if (event.message.text.toLowerCase() == "สอบถามระบบ") {
       //   const message = await gemini.chatWithOwnData(event.message.text);
@@ -88,3 +145,9 @@ exports.webhook = onRequest(async (request, response) => {
   }
   return response.end();
 });
+
+// type เป็นภาพ if else ใช้ event.message.type === "image"
+// type เป็น text แปลงตัวอักษรเป็นพิมพ์เล็ก event.message.text.toLowerCase() == "สอบถามระบบ"
+// type เป็น text ตัวอักษรปกติ event.message.text == "สอบถามระบบ"
+// var imageURL = "https://wutthipong.info/wp-content/uploads/2024/03/LCC2024.png?v1"
+// var imageURL2 = "https://m.media-amazon.com/images/I/51gk0qxOyfL.jpg?w=auto"
