@@ -10,6 +10,7 @@ const cache = new NodeCache({ stdTTL: 600 }); // 600 sec = 10 min ระยะ�
 const template = require("./message/template");
 const line = require("./utils/line");
 const gemini = require("./utils/gemini");
+const axios = require("axios");
 
 async function checkSignature(request, response) {
   if (request.method !== "POST") {
@@ -60,9 +61,23 @@ exports.webhook = onRequest(async (request, response) => {
             //     template.text("Check In. Successfuly."),
             //   ]);
             // }
-          } else if (event.message.text.toLowerCase() == "hi") {
+          } else if (event.message.text == "สวัสดี") {
             await line.showLoadingAnimation(userId);
-            await line.reply(replyToken, [template.text("สวัสดีค่ะ")]);
+            const response = await axios.get(
+              "https://api.line.me/v2/bot/profile/" + userId
+            );
+            console.log(response);
+            await line.reply(replyToken, [template.text("Hello" + userId)]);
+          } else if (event.message.text.toLowerCase() == "กาแฟ") {
+            const response = await axios.get(
+              "https://api.sampleapis.com/coffee/iced"
+            );
+            coffree: [];
+            forEach((coffree) => {
+              this.coffree.push(response.data());
+            });
+            await line.showLoadingAnimation(userId);
+            await line.reply(replyToken, [template.text(coffree)]);
           } else if (event.message.text.toLowerCase() == "Flex") {
             await line.showLoadingAnimation(userId);
             await line.reply(replyToken, [template.promotion()]);
@@ -125,7 +140,11 @@ exports.webhook = onRequest(async (request, response) => {
             });
 
             await line.reply(replyToken, [template.flex(date, data)]);
-          } else {
+          } else if (event.message.text === "อ.วุฒิพงษ์ ชินศร") {
+            const message = await gemini.chat(event.message.text);
+            await line.reply(replyToken, [template.text(message)]);
+          } // สำหรับกรณีเลือกต้องการคุยกับ AI
+          else {
             // const message = await gemini.chat(event.message.text);
             // await line.reply(replyToken, [template.text(message)]); ใช้ตอบทุกเรื่อง
             await line.showLoadingAnimation(userId);
@@ -138,11 +157,6 @@ exports.webhook = onRequest(async (request, response) => {
           const image = await gemini.multimodal(imageBinary); // เรียกใช้ function และเก็บค่า
           await line.reply(replyToken, [template.text(image)]); // โชว์ผลลัพธ์ของ image
         }
-      // else if (event.message.text.toLowerCase() == "สอบถามระบบ") {
-      //   const message = await gemini.chatWithOwnData(event.message.text);
-      //   console.log(message);
-      //   await line.reply(replyToken, [template.text(message)]);
-      // } ef สำหรับกรณีเลือกต้องการคุยกับ AI
     }
   }
   return response.end();
